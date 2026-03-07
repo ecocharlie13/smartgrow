@@ -47,7 +47,7 @@ async function atualizar(){
 
 try{
 
-const res = await fetch("https://wispy-moon-d17f.ecocharlie13.workers.dev");
+const res = await fetch("https://wispy-moon-d17f.ecocharlie13.workers.dev/");
 const data = await res.json();
 
 let estado = data.state;
@@ -55,7 +55,7 @@ let estado = data.state;
 let texto="NORMAL";
 let cor="#22c55e";
 
-if(estado==1){
+if(estado==="INUNDADO"){
 texto="ALERTA";
 cor="#ef4444";
 }
