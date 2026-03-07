@@ -1,6 +1,80 @@
 <!DOCTYPE html>
 <html>
-<body style="background:black;color:white;font-size:40px;text-align:center;margin-top:200px;">
-SMARTGROW ONLINE
+<head>
+<title>Smart Grow Dashboard</title>
+
+<style>
+body{
+font-family: Arial;
+text-align:center;
+margin-top:120px;
+background:#0f172a;
+color:white;
+}
+
+.card{
+background:#1e293b;
+width:300px;
+margin:auto;
+padding:40px;
+border-radius:12px;
+}
+
+.status{
+font-size:40px;
+font-weight:bold;
+margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Nivel Runoff</h2>
+
+<div id="status" class="status">
+Carregando...
+</div>
+
+</div>
+
+<script>
+
+async function atualizar(){
+
+try{
+
+const res = await fetch("https://wispy-moon-d17f.ecocharlie13.workers.dev");
+const data = await res.json();
+
+let estado = data.state;
+
+let texto="NORMAL";
+let cor="#22c55e";
+
+if(estado==1){
+texto="ALERTA";
+cor="#ef4444";
+}
+
+document.getElementById("status").innerText=texto;
+document.getElementById("status").style.color=cor;
+
+}catch(e){
+
+document.getElementById("status").innerText="ERRO API";
+
+}
+
+}
+
+atualizar();
+setInterval(atualizar,5000);
+
+</script>
+
 </body>
 </html>
