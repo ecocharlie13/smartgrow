@@ -1,80 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Grow Dashboard</title>
+  <title>Smart Grow Dashboard</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 120px;
+      background: #0f172a;
+      color: white;
+    }
 
-<style>
-body{
-font-family: Arial;
-text-align:center;
-margin-top:120px;
-background:#0f172a;
-color:white;
-}
+    .card {
+      background: #1e293b;
+      width: 300px;
+      margin: auto;
+      padding: 40px;
+      border-radius: 12px;
+    }
 
-.card{
-background:#1e293b;
-width:300px;
-margin:auto;
-padding:40px;
-border-radius:12px;
-}
+    .status {
+      font-size: 40px;
+      font-weight: bold;
+      margin-top: 20px;
+    }
 
-.status{
-font-size:40px;
-font-weight:bold;
-margin-top:20px;
-}
-</style>
-
+    .battery {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="card">
+  <div class="card">
+    <h2>Nível Runoff</h2>
+    <div id="status" class="status">Carregando...</div>
+    <div id="battery" class="battery"></div>
+  </div>
 
-<h2>Nivel Runoff</h2>
+  <script>
+    async function atualizar() {
+      try {
+        const res = await fetch("https://wispy-moon-d17f.ecocharlie13.workers.dev");
+        const data = await res.json();
 
-<div id="status" class="status">
-Carregando...
-</div>
+        // Estado do sensor
+        let estado = data.state;
+        let texto = "NORMAL";
+        let cor = "#22c55e";
 
-</div>
+        if (estado === "INUNDADO") {
+          texto = "ALERTA";
+          cor = "#ef4444";
+        }
 
-<script>
+        document.getElementById("status").innerText = texto;
+        document.getElementById("status").style.color = cor;
 
-async function atualizar(){
+        // Nível da bateria, se existir
+        let bateria = data.data.result.battery_percentage;
+        if (bateria !== undefined) {
+          document.getElementById("battery").innerText = `Bateria: ${bateria}%`;
+        }
 
-try{
+      } catch (e) {
+        document.getElementById("status").innerText = "ERRO API";
+        document.getElementById("battery").innerText = "";
+      }
+    }
 
-const res = await fetch("https://wispy-moon-d17f.ecocharlie13.workers.dev/");
-const data = await res.json();
-
-let estado = data.state;
-
-let texto="NORMAL";
-let cor="#22c55e";
-
-if(estado==="INUNDADO"){
-texto="ALERTA";
-cor="#ef4444";
-}
-
-document.getElementById("status").innerText=texto;
-document.getElementById("status").style.color=cor;
-
-}catch(e){
-
-document.getElementById("status").innerText="ERRO API";
-
-}
-
-}
-
-atualizar();
-setInterval(atualizar,1000);
-
-</script>
+    atualizar();
+    setInterval(atualizar, 1000); // Atualiza a cada 1 segundo
+  </script>
 
 </body>
 </html>
