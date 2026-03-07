@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <title>Smart Grow Dashboard</title>
 
 <style>
+
 body{
 font-family: Arial;
 text-align:center;
@@ -17,53 +19,66 @@ background:#1e293b;
 width:300px;
 margin:auto;
 padding:40px;
-border-radius:12px;
+border-radius:20px;
+box-shadow:0 0 20px rgba(0,0,0,0.3);
 }
 
 .status{
-font-size:40px;
-font-weight:bold;
+font-size:48px;
 margin-top:20px;
+font-weight:bold;
 }
 
 .normal{
-color:#22c55e;
+color:#4ade80;
 }
 
 .alarm{
 color:#ef4444;
 }
-</style>
 
+</style>
 </head>
 
 <body>
 
 <div class="card">
-
 <h2>Nivel Runoff</h2>
-
-<div id="status" class="status">Carregando...</div>
-
+<div id="status" class="status normal">NORMAL</div>
 </div>
 
 <script>
 
-const state = 0;
+async function atualizar(){
 
-const statusDiv = document.getElementById("status");
+try{
 
-if(state === 0){
-statusDiv.innerHTML = "NORMAL";
-statusDiv.classList.add("normal");
+const r = await fetch("https://openapi.tuyaus.com/v2.0/cloud/thing/eb0753453d3e2c0ed0jqkr/state");
+const d = await r.json();
+
+const estado = d.result.state;
+
+const el = document.getElementById("status");
+
+if(estado == 1){
+el.innerText="ALARM";
+el.className="status alarm";
 }
 else{
-statusDiv.innerHTML = "ALARM";
-statusDiv.classList.add("alarm");
+el.innerText="NORMAL";
+el.className="status normal";
 }
+
+}catch(e){
+console.log(e);
+}
+
+}
+
+setInterval(atualizar,10000);
+atualizar();
 
 </script>
 
 </body>
 </html>
-
